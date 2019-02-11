@@ -1,9 +1,8 @@
 package com.example.mattdunn.anothersocketproject.ticketlistfragment;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
-import android.app.Fragment;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -53,7 +52,7 @@ public class TicketListFragment extends android.support.v4.app.Fragment
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_ticket_list, container, false);

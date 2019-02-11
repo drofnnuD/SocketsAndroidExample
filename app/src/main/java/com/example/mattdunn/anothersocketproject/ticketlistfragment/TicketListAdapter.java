@@ -20,8 +20,8 @@ public class TicketListAdapter extends RecyclerView.Adapter<TicketListAdapter.Vi
     private Context context;
     private TicketListAdapterListener listener;
 
-    public TicketListAdapter(List<TicketModel> ticketList, Context context,
-                             TicketListAdapterListener listener) {
+    TicketListAdapter(List<TicketModel> ticketList, Context context,
+                      TicketListAdapterListener listener) {
         this.ticketList = ticketList;
         this.context = context;
         this.listener = listener;
@@ -46,18 +46,18 @@ public class TicketListAdapter extends RecyclerView.Adapter<TicketListAdapter.Vi
             public void onClick(View v) {
                 if(ticketList.get(holder.getAdapterPosition()).getRedeemed()){
                     listener.unRedeemTicket(ticketList.get(holder.getAdapterPosition()));
-                    holder.btn_redeem_unredeem.setText("Redeem");
+                    holder.btn_redeem_unredeem.setText(R.string.redeem);
                     ticketList.get(holder.getAdapterPosition()).setRedeemed(false);
                 } else {
                     listener.redeemTicket(ticketList.get(holder.getAdapterPosition()));
-                    holder.btn_redeem_unredeem.setText("Unredeem");
+                    holder.btn_redeem_unredeem.setText(R.string.un_redeem);
                     ticketList.get(holder.getAdapterPosition()).setRedeemed(true);
                 }
             }
         });
     }
 
-    public void setTicketToRedeemed(TicketModel ticketModel){
+    void setTicketToRedeemed(TicketModel ticketModel){
         for(int i = 0; i < ticketList.size(); i++){
             if(ticketModel.getBarcode().equals(ticketList.get(i).getBarcode())){
                 ticketList.get(i).setRedeemed(true);
@@ -67,7 +67,7 @@ public class TicketListAdapter extends RecyclerView.Adapter<TicketListAdapter.Vi
         notifyDataSetChanged();
     }
 
-    public void setTicketToUnRedeemed(TicketModel ticketModel){
+    void setTicketToUnRedeemed(TicketModel ticketModel){
         for(int i = 0; i < ticketList.size(); i++){
             if(ticketModel.getBarcode().equals(ticketList.get(i).getBarcode())){
                 ticketList.get(i).setRedeemed(false);
