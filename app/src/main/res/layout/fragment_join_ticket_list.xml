@@ -1,0 +1,43 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.mattdunn.anothersocketproject.joinlistfragment.JoinTicketListFragment"
+    android:orientation="vertical">
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/join_this_shit"
+        android:gravity="center"/>
+
+    <EditText
+        android:id="@+id/et_join_box"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="64dp"
+        android:layout_marginEnd="64dp"
+        android:layout_marginTop="8dp"/>
+
+    <Button
+        android:id="@+id/btn_join_that_shit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="84dp"
+        android:layout_marginEnd="84dp"
+        android:textAllCaps="false"
+        android:text="@string/join_it_then"/>
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
+</LinearLayout>
