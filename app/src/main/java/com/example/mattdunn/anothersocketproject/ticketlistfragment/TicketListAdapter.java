@@ -38,20 +38,21 @@ public class TicketListAdapter extends RecyclerView.Adapter<TicketListAdapter.Vi
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, int i) {
         holder.txt_barcode.setText(ticketList.get(i).getBarcode());
-        holder.txt_ticket_name.setText(ticketList.get(i).getTicketName());
-        holder.btn_redeem_unredeem.setText(ticketList.get(i).getRedeemed() ? "Unredeem" : "Redeem");
+        holder.txt_ticket_name.setText(ticketList.get(i).getName());
+
+        holder.btn_redeem_unredeem.setText(ticketList.get(i).getEntered() ? "Unredeem" : "Redeem");
 
         holder.btn_redeem_unredeem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(ticketList.get(holder.getAdapterPosition()).getRedeemed()){
+                if(ticketList.get(holder.getAdapterPosition()).getEntered()){
                     listener.unRedeemTicket(ticketList.get(holder.getAdapterPosition()));
                     holder.btn_redeem_unredeem.setText(R.string.redeem);
-                    ticketList.get(holder.getAdapterPosition()).setRedeemed(false);
+                    ticketList.get(holder.getAdapterPosition()).setEntered(false);
                 } else {
                     listener.redeemTicket(ticketList.get(holder.getAdapterPosition()));
                     holder.btn_redeem_unredeem.setText(R.string.un_redeem);
-                    ticketList.get(holder.getAdapterPosition()).setRedeemed(true);
+                    ticketList.get(holder.getAdapterPosition()).setEntered(true);
                 }
             }
         });
@@ -60,7 +61,7 @@ public class TicketListAdapter extends RecyclerView.Adapter<TicketListAdapter.Vi
     void setTicketToRedeemed(TicketModel ticketModel){
         for(int i = 0; i < ticketList.size(); i++){
             if(ticketModel.getBarcode().equals(ticketList.get(i).getBarcode())){
-                ticketList.get(i).setRedeemed(true);
+                ticketList.get(i).setEntered(true);
                 break;
             }
         }
@@ -70,7 +71,7 @@ public class TicketListAdapter extends RecyclerView.Adapter<TicketListAdapter.Vi
     void setTicketToUnRedeemed(TicketModel ticketModel){
         for(int i = 0; i < ticketList.size(); i++){
             if(ticketModel.getBarcode().equals(ticketList.get(i).getBarcode())){
-                ticketList.get(i).setRedeemed(false);
+                ticketList.get(i).setEntered(false);
                 break;
             }
         }

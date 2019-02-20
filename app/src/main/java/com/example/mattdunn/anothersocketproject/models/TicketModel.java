@@ -4,37 +4,42 @@ import org.json.JSONObject;
 
 public class TicketModel {
 
-    private String barcode, ticketName, String;
-    private boolean redeemed;
+    private String name, time, barcode, scannerName;
+    private Boolean entered;
 
     public TicketModel(JSONObject object) {
         try {
+            this.name = object.getString("name");
+            this.time = object.getString("time");
             this.barcode = object.getString("barcode");
-            this.ticketName = object.getString("tickeName");
-            this.String = object.getString("string");
-            this.redeemed = object.getBoolean("redeemed");
+            this.scannerName = object.getString("scannerName");
+            this.entered = object.getBoolean("entered");
         } catch (Exception e){
             e.printStackTrace();
         }
     }
 
-    public java.lang.String getBarcode() {
+    public String getName() {
+        return name;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public String getBarcode() {
         return barcode;
     }
 
-    public java.lang.String getTicketName() {
-        return ticketName;
+    public String getScannerName() {
+        return scannerName;
     }
 
-    public java.lang.String getString() {
-        return String;
+    public Boolean getEntered() {
+        return entered;
     }
 
-    public boolean getRedeemed() {
-        return redeemed;
-    }
-
-    public void setRedeemed(boolean redeemed){
-        this.redeemed = redeemed;
+    public void setEntered(Boolean entered) {
+        this.entered = entered;
     }
 }

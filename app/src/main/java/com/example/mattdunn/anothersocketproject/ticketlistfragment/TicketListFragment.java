@@ -1,6 +1,7 @@
 package com.example.mattdunn.anothersocketproject.ticketlistfragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
@@ -61,62 +62,28 @@ public class TicketListFragment extends android.support.v4.app.Fragment
 
         setUpSocket();
 
-        socket.on("userjoinedthechat", new Emitter.Listener() {
+        socket.on("history", new Emitter.Listener() {
             @Override
-            public void call(final Object... args) {
+            public void call(Object... args) {
+                final String test = (String) args[0];
+                Log.d("TEST", test);
                 fragmentInteractionListener.getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        String response = (String) args[0];
-                        Toast.makeText(context, "IT WORKED", Toast.LENGTH_SHORT).show();
-                        Log.d("RESPONSE", "YES");
-                        Log.d("RESPONSE", response + " ");
-                        handleUserJoinedData(response);
-                    }
-                });
-
-            }
-        });
-
-        socket.on("custom", new Emitter.Listener() {
-            @Override
-            public void call(final Object... args) {
-                fragmentInteractionListener.getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(context, "THIS WORKED?", Toast.LENGTH_SHORT).show();
-                        Log.d("RESPONSE", "YES MATE");
-                    }
-                });
-
-            }
-        });
-
-        socket.on("ticketUpdated", new Emitter.Listener() {
-            @Override
-            public void call(final Object... args) {
-                fragmentInteractionListener.getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Log.d("REDEEM WORKED", "IT DID");
-                        Toast.makeText(context, "FUCKING REDEEMED", Toast.LENGTH_SHORT).show();
-                        String resposnse = (String) args[0];
-                        Log.d("RED RESPONSE", resposnse + " ");
-                        handleRedeemEmit(resposnse);
+                        setUpListAndAdapter(test);
                     }
                 });
             }
         });
 
-        socket.on("ticketUnredeemed", new Emitter.Listener() {
+        socket.on("message", new Emitter.Listener() {
             @Override
             public void call(final Object... args) {
                 fragmentInteractionListener.getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        String resposnse = (String) args[0];
-                        Log.d("RED RESPONSE", resposnse + " ");
-                        handleUnredeemEdit(resposnse);
+                        String message = (String) args[0];
+                        handleMessageEmit(message);
                     }
                 });
             }
@@ -134,45 +101,35 @@ public class TicketListFragment extends android.support.v4.app.Fragment
 
     private void setUpSocket(){
         try {
-            socket = IO.socket("http://10.0.2.2:3000");
+            socket = IO.socket("http://67cfdc45.ngrok.io/");
             socket.connect();
-            socket.emit("join", "MATT JOINED");
-            socket.emit("custom", "");
-
         } catch (Exception e){
             e.printStackTrace();
         }
     }
 
-    private void handleUserJoinedData(String data){
+    private void setUpListAndAdapter(String jsonArrayString){
         try {
-            List<TicketModel> ticketList = new ArrayList<>();
-            JSONArray jsonArray = new JSONArray(data);
+            JSONArray jsonArray = new JSONArray(jsonArrayString);
+            List<TicketModel> ticketModels = new ArrayList<>();
             for(int i = 0; i < jsonArray.length(); i++){
-                ticketList.add(new TicketModel(jsonArray.getJSONObject(i)));
+                ticketModels.add(new TicketModel(jsonArray.getJSONObject(i)));
             }
-            adapter = new TicketListAdapter(ticketList, context, this);
+            adapter = new TicketListAdapter(ticketModels, context, this);
             re_tickets.setAdapter(adapter);
         } catch (Exception e){
             e.printStackTrace();
         }
     }
 
-    private void handleRedeemEmit(String response){
+    private void handleMessageEmit(String jsonString){
         try {
-            JSONObject jsonObject = new JSONObject(response);
-            TicketModel ticketModel = new TicketModel(jsonObject);
-            adapter.setTicketToRedeemed(ticketModel);
-        } catch (Exception e){
-            e.printStackTrace();
-        }
-    }
-
-    private void handleUnredeemEdit(String response){
-        try {
-            JSONObject jsonObject = new JSONObject(response);
-            TicketModel ticketModel = new TicketModel(jsonObject);
-            adapter.setTicketToUnRedeemed(ticketModel);
+            JSONObject jsonObject = new JSONObject(jsonString);
+            if(jsonObject.getBoolean("entered")){
+                adapter.setTicketToRedeemed(new TicketModel(jsonObject));
+            } else {
+                adapter.setTicketToUnRedeemed(new TicketModel(jsonObject));
+            }
         } catch (Exception e){
             e.printStackTrace();
         }
@@ -192,11 +149,27 @@ public class TicketListFragment extends android.support.v4.app.Fragment
 
     @Override
     public void redeemTicket(TicketModel ticketModel) {
-        socket.emit("redeem", ticketModel.getBarcode());
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("barcode", Integer.parseInt(ticketModel.getBarcode()));
+            jsonObject.put("scannerName", "mattScan");
+            jsonObject.put("entered", true);
+            socket.emit("message", jsonObject.toString());
+        } catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void unRedeemTicket(TicketModel ticketModel) {
-        socket.emit("unredeem", ticketModel.getBarcode());
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("barcode", Integer.parseInt(ticketModel.getBarcode()));
+            jsonObject.put("scannerName", "mattScan");
+            jsonObject.put("entered", false);
+            socket.emit("message", jsonObject.toString());
+        } catch (Exception e){
+            e.printStackTrace();
+        }
     }
 }
